@@ -7,7 +7,7 @@
         "event-engine/php-data": "^2.0-beta.4",
         "roave/security-advisories": "dev-master"
     },
-    "license": "BSD-3",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alexander Miertsch",
