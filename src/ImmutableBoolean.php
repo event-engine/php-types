@@ -39,7 +39,7 @@ trait ImmutableBoolean
 
     public function __construct(bool $value)
     {
-        if(isset($this->value)) {
+        if (isset($this->value)) {
             throw new BadMethodCallException(__METHOD__ . ' called on existing object!');
         }
 
@@ -58,11 +58,11 @@ trait ImmutableBoolean
 
     public function equals($value): bool
     {
-        if(is_object($value) && method_exists($value, 'toBool')) {
+        if (is_object($value) && method_exists($value, 'toBool')) {
             return $this->value === $value->toBool();
         }
 
-        if(is_bool($value)) {
+        if (is_bool($value)) {
             return $this->value === $value;
         }
 

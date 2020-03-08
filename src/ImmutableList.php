@@ -117,7 +117,7 @@ trait ImmutableList
      */
     public function pop(): self
     {
-        if(count($this->items) === 0) {
+        if (count($this->items) === 0) {
             return $this;
         }
 
@@ -133,7 +133,7 @@ trait ImmutableList
      */
     public function shift(): self
     {
-        if(count($this->items) === 0) {
+        if (count($this->items) === 0) {
             return $this;
         }
 
@@ -149,7 +149,7 @@ trait ImmutableList
      */
     public function first()
     {
-        if(count($this->items)) {
+        if (count($this->items)) {
             return $this->items[0];
         }
 
@@ -161,7 +161,7 @@ trait ImmutableList
      */
     public function last()
     {
-        if(count($this->items)) {
+        if (count($this->items)) {
             return $this->items[count($this->items) - 1];
         }
 
@@ -177,7 +177,7 @@ trait ImmutableList
         $filteredItems = [];
 
         foreach ($this->items as $item) {
-            if($filter($item)) {
+            if ($filter($item)) {
                 $filteredItems[] = $item;
             }
         }
@@ -189,11 +189,11 @@ trait ImmutableList
 
     public function equals($other): bool
     {
-        if(is_object($other) && method_exists($other, 'toArray')) {
+        if (is_object($other) && method_exists($other, 'toArray')) {
             return $this->items == $other->toArray();
         }
 
-        if(is_array($other)) {
+        if (is_array($other)) {
             return $this->items == $other;
         }
 
@@ -267,7 +267,7 @@ trait ImmutableList
             self::$__propTypeMap = self::buildPropTypeMap();
         }
 
-        if(null === self::$__arrayPropItemTypeMap) {
+        if (null === self::$__arrayPropItemTypeMap) {
             self::$__arrayPropItemTypeMap = self::arrayPropItemTypeMap();
         }
     }

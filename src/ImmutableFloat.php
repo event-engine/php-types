@@ -39,7 +39,7 @@ trait ImmutableFloat
 
     public function __construct(float $value)
     {
-        if(isset($this->value)) {
+        if (isset($this->value)) {
             throw new BadMethodCallException(__METHOD__ . ' called on existing object!');
         }
 
@@ -58,11 +58,11 @@ trait ImmutableFloat
 
     public function equals($value): bool
     {
-        if(is_object($value) && method_exists($value, 'toFloat')) {
+        if (is_object($value) && method_exists($value, 'toFloat')) {
             return $this->value === $value->toFloat();
         }
 
-        if(is_float($value)) {
+        if (is_float($value)) {
             return $this->value === $value;
         }
 
