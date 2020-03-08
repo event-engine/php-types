@@ -40,7 +40,7 @@ trait ImmutableString
 
     public function __construct(string $value)
     {
-        if(isset($this->value)) {
+        if (isset($this->value)) {
             throw new BadMethodCallException(__METHOD__ . ' called on existing object!');
         }
 
@@ -59,11 +59,11 @@ trait ImmutableString
 
     public function equals($value): bool
     {
-        if(is_object($value) && method_exists($value, 'toString')) {
+        if (is_object($value) && method_exists($value, 'toString')) {
             return $this->value === $value->toString();
         }
 
-        if(is_string($value)) {
+        if (is_string($value)) {
             return $this->value === $value;
         }
 

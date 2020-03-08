@@ -39,7 +39,7 @@ trait ImmutableInteger
 
     public function __construct(int $value)
     {
-        if(isset($this->value)) {
+        if (isset($this->value)) {
             throw new BadMethodCallException(__METHOD__ . ' called on existing object!');
         }
 
@@ -58,11 +58,11 @@ trait ImmutableInteger
 
     public function equals($value): bool
     {
-        if(is_object($value) && method_exists($value, 'toInt')) {
+        if (is_object($value) && method_exists($value, 'toInt')) {
             return $this->value === $value->toInt();
         }
 
-        if(is_int($value)) {
+        if (is_int($value)) {
             return $this->value === $value;
         }
 

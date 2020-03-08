@@ -10,14 +10,9 @@ declare(strict_types=1);
 
 namespace EventEngineTest\Type\Stub;
 
-use EventEngine\Type\ImmutableList;
+use EventEngine\Type\ImmutableFloat;
 
-final class ListWithoutTypeHintedConstructor
+final class Percentage
 {
-    use ImmutableList;
-
-    private function __construct(...$items)
-    {
-        $this->items = $items;
-    }
+    use ImmutableFloat;
 }

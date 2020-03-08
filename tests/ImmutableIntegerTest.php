@@ -40,6 +40,7 @@ final class ImmutableIntegerTest extends TestCase
         $this->assertTrue($version->equals($other));
         $this->assertTrue($version->equals(1));
         $this->assertFalse($version->equals(2));
+        $this->assertFalse($version->equals('test'));
     }
 
     /**

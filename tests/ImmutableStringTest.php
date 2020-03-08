@@ -39,6 +39,7 @@ final class ImmutableStringTest extends TestCase
         $this->assertTrue($username->equals($other));
         $this->assertTrue($username->equals('Jane'));
         $this->assertFalse($username->equals('John'));
+        $this->assertFalse($username->equals(123));
     }
 
     /**
