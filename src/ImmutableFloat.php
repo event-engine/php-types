@@ -32,7 +32,7 @@ trait ImmutableFloat
      * @param float $value
      * @return static
      */
-    public static function fromString(float $value): self
+    public static function fromFloat(float $value): self
     {
         return new self($value);
     }

@@ -34,7 +34,7 @@ final class ImmutableBooleanTest extends TestCase
     /**
      * @test
      */
-    public function it_equals_other_strings_with_same_value()
+    public function it_equals_other_booleans_with_same_value()
     {
         $access = Access::fromBool(true);
         $other = Access::fromBool(true);
