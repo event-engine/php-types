@@ -13,6 +13,13 @@ namespace EventEngine\Type;
 use EventEngine\Data\ImmutableRecordLogic;
 use ReflectionClass;
 use RuntimeException;
+use function array_push;
+use function array_unshift;
+use function array_values;
+use function count;
+use function is_array;
+use function is_object;
+use function method_exists;
 
 /**
  * @template T
@@ -45,25 +52,11 @@ trait ImmutableList
     public array $items;
 
     /**
-     * @psalm-param T $item
-     * @psalm-external-mutation-free
-     * @return self
-     */
-    public function push($item): self
-    {
-        self::ensurePropTypeMapIsBuilt();
-        $this->assertType('items', [$item]);
-
-        $self = clone $this;
-        $self->items[] = $item;
-        return $self;
-    }
-
-    /**
      * @param array $recordData
      * @return self
      * @psalm-suppress MixedArgument
      * @psalm-external-mutation-free
+     * @throws \ReflectionException
      */
     public static function fromRecordData(array $recordData)
     {
@@ -76,10 +69,11 @@ trait ImmutableList
      * @param array $nativeData
      * @psalm-external-mutation-free
      * @return self
+     * @throws \ReflectionException
      */
     public static function fromArray(array $nativeData)
     {
-        self::ensurePropTypeMapIsBuilt();;
+        self::ensurePropTypeMapIsBuilt();
 
         $self = new self();
         $self->setNativeData(['items' => $nativeData]);
@@ -87,8 +81,129 @@ trait ImmutableList
     }
 
     /**
+     * @psalm-param T ...$item
+     * @psalm-external-mutation-free
+     * @return self
+     * @throws \ReflectionException
+     */
+    public function push(...$items): self
+    {
+        self::ensurePropTypeMapIsBuilt();
+        $this->assertType('items', $items);
+
+        $self = clone $this;
+        array_push($self->items, ...$items);
+        return $self;
+    }
+
+    /**
+     * @psalm-param T ...$items
+     * @return $this
+     * @throws \ReflectionException
+     */
+    public function unshift(...$items): self
+    {
+        self::ensurePropTypeMapIsBuilt();
+        $this->assertType('items', $items);
+
+        $self = clone $this;
+        array_unshift($self->items, ...$items);
+        return $self;
+    }
+
+    /**
+     * @psalm-external-mutation-free
+     * @return self
+     */
+    public function pop(): self
+    {
+        if(count($this->items) === 0) {
+            return $this;
+        }
+
+        $self = clone $this;
+        unset($self->items[count($self->items) - 1]);
+
+        return $self;
+    }
+
+    /**
+     * @psalm-external-mutation-free
+     * @return self
+     */
+    public function shift(): self
+    {
+        if(count($this->items) === 0) {
+            return $this;
+        }
+
+        $self = clone $this;
+        unset($self->items[0]);
+        $self->items = array_values($self->items);
+
+        return $self;
+    }
+
+    /**
+     * @return T|null
+     */
+    public function first()
+    {
+        if(count($this->items)) {
+            return $this->items[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return T|null
+     */
+    public function last()
+    {
+        if(count($this->items)) {
+            return $this->items[count($this->items) - 1];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param callable $filter
+     * @return static
+     */
+    public function filter(callable $filter): self
+    {
+        $filteredItems = [];
+
+        foreach ($this->items as $item) {
+            if($filter($item)) {
+                $filteredItems[] = $item;
+            }
+        }
+
+        $self = clone $this;
+        $self->items = $filteredItems;
+        return $self;
+    }
+
+    public function equals($other): bool
+    {
+        if(is_object($other) && method_exists($other, 'toArray')) {
+            return $this->items == $other->toArray();
+        }
+
+        if(is_array($other)) {
+            return $this->items == $other;
+        }
+
+        return false;
+    }
+
+    /**
      * @return array<array-key, mixed>
      * @psalm-external-mutation-free
+     * @throws \ReflectionException
      */
     public function toArray(): array
     {
@@ -116,28 +231,24 @@ trait ImmutableList
 
         $errorMsg = __CLASS__ . " misses a public constructor that defines the item type of the collection.";
 
-        if(null === $constructor) {
+        if (null === $constructor) {
             throw new RuntimeException($errorMsg);
         }
 
-        if(!$constructor->isPublic()) {
-            throw new RuntimeException($errorMsg);
-        }
-
-        if($constructor->getNumberOfParameters() !== 1) {
+        if ($constructor->getNumberOfParameters() !== 1) {
             throw new RuntimeException($errorMsg);
         }
 
         $params = $constructor->getParameters();
 
         foreach ($params as $param) {
-            if(!$param->hasType()) {
+            if (!$param->hasType()) {
                 throw new RuntimeException($errorMsg);
             }
 
             $type = $param->getType();
 
-            if(null === $type) {
+            if (null === $type) {
                 return [];
             }
 
@@ -147,10 +258,17 @@ trait ImmutableList
         return [];
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     private static function ensurePropTypeMapIsBuilt(): void
     {
         if (null === self::$__propTypeMap) {
             self::$__propTypeMap = self::buildPropTypeMap();
+        }
+
+        if(null === self::$__arrayPropItemTypeMap) {
+            self::$__arrayPropItemTypeMap = self::arrayPropItemTypeMap();
         }
     }
 }

@@ -11,34 +11,33 @@ declare(strict_types=1);
 namespace EventEngine\Type;
 
 use BadMethodCallException;
+use function is_bool;
 use function is_object;
-use function is_string;
 use function method_exists;
 
 /**
- * Trait ImmutableString
- *
+ * Trait ImmutableBoolean
  * @package EventEngine\Type
  *
  * @psalm-immutable
  */
-trait ImmutableString
+trait ImmutableBoolean
 {
     /**
      * @psalm-readonly
      */
-    public string $value;
+    public bool $value;
 
     /**
-     * @param string $value
+     * @param bool $value
      * @return static
      */
-    public static function fromString(string $value): self
+    public static function fromBool(bool $value): self
     {
         return new self($value);
     }
 
-    public function __construct(string $value)
+    public function __construct(bool $value)
     {
         if(isset($this->value)) {
             throw new BadMethodCallException(__METHOD__ . ' called on existing object!');
@@ -47,23 +46,23 @@ trait ImmutableString
         $this->value = $value;
     }
 
-    public function toString(): string
+    public function toBool(): bool
     {
         return $this->value;
     }
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->value ? 'TRUE' : 'FALSE';
     }
 
     public function equals($value): bool
     {
-        if(is_object($value) && method_exists($value, 'toString')) {
-            return $this->value === $value->toString();
+        if(is_object($value) && method_exists($value, 'toBool')) {
+            return $this->value === $value->toBool();
         }
 
-        if(is_string($value)) {
+        if(is_bool($value)) {
             return $this->value === $value;
         }
 
