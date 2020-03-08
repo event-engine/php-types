@@ -39,6 +39,7 @@ final class ImmutableFloatTest extends TestCase
         $this->assertTrue($percentage->equals($other));
         $this->assertTrue($percentage->equals(0.5));
         $this->assertFalse($percentage->equals(0.6));
+        $this->assertFalse($percentage->equals('test'));
     }
 
     /**

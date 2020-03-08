@@ -42,6 +42,7 @@ final class ImmutableBooleanTest extends TestCase
         $this->assertTrue($access->equals($other));
         $this->assertTrue($access->equals(true));
         $this->assertFalse($access->equals(false));
+        $this->assertFalse($access->equals('test'));
     }
 
     /**
